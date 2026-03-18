@@ -7,6 +7,7 @@ import { projects } from '@/src/data/projects'
 import { ProjectCard } from '@/src/components/sections/projects/ProjectCard'
 import { ThemeToggle } from '@/src/components/ui/ThemeToggle'
 import { useMediaQuery } from '@/src/hooks/useMediaQuery'
+import { ProjectsBackground } from '@/src/components/backgrounds/ProjectsBackground'
 
 function BackLink({ isMobile }: { isMobile: boolean }) {
   const handleBack = () => {
@@ -110,54 +111,7 @@ function ProjectsPageBackground() {
         overflow: 'hidden',
       }}
     >
-      {/* Gradiente radial sutil */}
-      <div style={{
-        position: 'absolute',
-        top: '-20%',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: '800px',
-        height: '600px',
-        background: `radial-gradient(
-          ellipse at center,
-          rgba(29, 158, 117, 0.06) 0%,
-          transparent 70%
-        )`,
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'absolute',
-        bottom: '-10%',
-        right: '-10%',
-        width: '600px',
-        height: '600px',
-        background: `radial-gradient(
-          ellipse at center,
-          rgba(127, 119, 221, 0.05) 0%,
-          transparent 70%
-        )`,
-        pointerEvents: 'none',
-      }} />
-
-      {/* Grid de puntos sutil */}
-      <svg
-        width="100%"
-        height="100%"
-        style={{ position: 'absolute', inset: 0, opacity: 0.15 }}
-      >
-        <defs>
-          <pattern
-            id="dots"
-            x="0" y="0"
-            width="32" height="32"
-            patternUnits="userSpaceOnUse"
-          >
-            <circle cx="1" cy="1" r="1"
-              fill="var(--color-border)" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#dots)" />
-      </svg>
+      <ProjectsBackground />
     </div>
   )
 }

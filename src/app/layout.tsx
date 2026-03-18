@@ -39,7 +39,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className={`${syne.variable} ${ibmPlexMono.variable} ${dmSans.variable} font-mono`} style={{ overflow: 'hidden', margin: 0 }}>
+      <body className={`${syne.variable} ${ibmPlexMono.variable} ${dmSans.variable} font-mono`} style={{ margin: 0 }}>
         <ThemeProvider
           attribute="data-theme"
           defaultTheme="dark"
