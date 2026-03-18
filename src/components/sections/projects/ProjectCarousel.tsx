@@ -75,51 +75,6 @@ function CarouselButton({
   );
 }
 
-function ViewAllButton() {
-  const [hovered, setHovered] = useState(false);
-  const isMobile = useMediaQuery('(max-width: 768px)');
-
-  return (
-    <Link
-      href="/projects"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '10px',
-        padding: '14px 32px',
-        borderRadius: '8px',
-        border: `1px solid ${hovered
-          ? 'var(--color-accent-primary)'
-          : 'var(--color-border)'}`,
-        background: hovered
-          ? 'var(--color-accent-primary)'
-          : 'var(--color-bg-surface)',
-        fontFamily: 'var(--font-ui)',
-        fontSize: '14px',
-        fontWeight: 500,
-        color: hovered ? '#ffffff' : 'var(--color-text-primary)',
-        textDecoration: 'none',
-        transition: 'all 0.25s ease',
-        width: isMobile ? '100%' : 'auto',
-      }}
-    >
-      Ver todos los proyectos
-      <motion.svg
-        width={14} height={14} viewBox="0 0 24 24" fill="none"
-        animate={{ x: hovered ? 4 : 0 }}
-        transition={{ duration: 0.2 }}
-      >
-        <path d="M5 12h14M12 5l7 7-7 7"
-          stroke="currentColor" strokeWidth="1.5"
-          strokeLinecap="round" strokeLinejoin="round"/>
-      </motion.svg>
-    </Link>
-  );
-}
-
 export function ProjectCarousel({ projects }: ProjectCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1); // 1 = siguiente, -1 = anterior
@@ -184,45 +139,16 @@ export function ProjectCarousel({ projects }: ProjectCarouselProps) {
         marginBottom: '32px',
       }}>
 
-        {/* Stage — ancho extra para acomodar cards laterales */}
+        {/* Stage */}
         <div style={{
           position: 'relative',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           width: '100%',
-          minHeight: '380px',
+          minHeight: '440px',
           padding: '20px 0',
         }}>
-
-          {/* Card ANTERIOR — fantasma izquierda */}
-          <AnimatePresence>
-            {currentIndex > 0 && (
-              <motion.div
-                key={`ghost-prev-${currentIndex}`}
-                initial={{ opacity: 0, x: 0 }}
-                animate={{ opacity: 0.22, x: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.35 }}
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: 0,
-                  width: '75%',
-                  transform: 'translateY(-50%) translateX(-30%) scale(0.85)',
-                  transformOrigin: 'center center',
-                  filter: 'blur(1.5px)',
-                  pointerEvents: 'none',
-                  zIndex: 1,
-                }}
-              >
-                <ProjectCard
-                  project={carouselProjects[currentIndex - 1]}
-                  isActive={false}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
 
           {/* Card ACTIVA — centro */}
           <div style={{
@@ -247,35 +173,6 @@ export function ProjectCarousel({ projects }: ProjectCarouselProps) {
               </motion.div>
             </AnimatePresence>
           </div>
-
-          {/* Card SIGUIENTE — fantasma derecha */}
-          <AnimatePresence>
-            {currentIndex < carouselProjects.length - 1 && (
-              <motion.div
-                key={`ghost-next-${currentIndex}`}
-                initial={{ opacity: 0, x: 0 }}
-                animate={{ opacity: 0.22, x: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.35 }}
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  right: 0,
-                  width: '75%',
-                  transform: 'translateY(-50%) translateX(30%) scale(0.85)',
-                  transformOrigin: 'center center',
-                  filter: 'blur(1.5px)',
-                  pointerEvents: 'none',
-                  zIndex: 1,
-                }}
-              >
-                <ProjectCard
-                  project={carouselProjects[currentIndex + 1]}
-                  isActive={false}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
 
         </div>
       </div>
@@ -317,46 +214,44 @@ export function ProjectCarousel({ projects }: ProjectCarouselProps) {
           ))}
         </div>
 
-        {/* Botón siguiente */}
-        <CarouselButton
-          direction="next"
-          onClick={goNext}
-          disabled={isLast}
-        />
-      </div>
-
-      {/* Contador de posición */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '8px',
-      }}>
-        <span style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: '12px',
-          color: 'var(--color-text-muted)',
-        }}>
-          {String(currentIndex + 1).padStart(2, '0')}
-          {' '}<span style={{ opacity: 0.4 }}>/</span>{' '}
-          {String(carouselProjects.length).padStart(2, '0')}
-        </span>
-      </div>
-
-      {/* Botón "Ver todos" — solo visible en la última card */}
-      <AnimatePresence>
-        {isLast && (
+        {/* Botón siguiente o Ver todos */}
+        {isLast ? (
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 16 }}
-            transition={{ duration: 0.4, ease: 'easeOut' }}
-            style={{ display: 'flex', justifyContent: 'center' }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
           >
-            <ViewAllButton />
+            <Link
+              href="/projects"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: isMobile ? '36px' : '44px',
+                height: isMobile ? '36px' : '44px',
+                borderRadius: '50%',
+                border: '1px solid var(--color-accent-primary)',
+                background: 'var(--color-accent-primary)',
+                color: '#ffffff',
+                textDecoration: 'none',
+                transition: 'all 0.2s ease',
+                flexShrink: 0,
+              }}
+              title="Ver todos los proyectos"
+            >
+              <svg width={18} height={18} viewBox="0 0 24 24" fill="none">
+                <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </Link>
           </motion.div>
+        ) : (
+          <CarouselButton
+            direction="next"
+            onClick={goNext}
+            disabled={false}
+          />
         )}
-      </AnimatePresence>
+      </div>
 
     </div>
   );

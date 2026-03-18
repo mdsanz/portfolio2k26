@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { useTheme } from 'next-themes';
 import { useReducedMotion } from '@/src/hooks/useReducedMotion';
 import { useMediaQuery } from '@/src/hooks/useMediaQuery';
@@ -58,26 +58,13 @@ const transition = {
 };
 
 interface PresentationLayoutProps {
-  children: React.ReactNode[];
+  children: React.ReactNode;
 }
 
 type Section = { id: string; label: string; icon: string };
 
-/**
- * Helper para serializar objetos de forma segura, evitando errores de estructura circular.
- */
-const safeStringify = (obj: any) => {
-  const cache = new Set();
-  return JSON.stringify(obj, (key, value) => {
-    if (typeof value === 'object' && value !== null) {
-      if (cache.has(value)) return '[Circular]';
-      cache.add(value);
-    }
-    return value;
-  });
-};
-
 export function PresentationLayout({ children }: PresentationLayoutProps) {
+  const childrenArray = React.Children.toArray(children);
   const [[currentIndex, direction], setPage] = useState([0, 0]);
   const prefersReducedMotion = useReducedMotion();
   const isMobile = useMediaQuery('(max-width: 1024px)');
@@ -118,7 +105,7 @@ export function PresentationLayout({ children }: PresentationLayoutProps) {
   }, [resolvedTheme]);
 
   const navigate = useCallback((newIndex: number) => {
-    if (newIndex < 0 || newIndex >= sections.length) return;
+    if (newIndex < 0 || newIndex >= childrenArray.length) return;
     const dir = newIndex > currentIndexRef.current ? 1 : -1;
     setIsAnimating(true);
     setPage([newIndex, dir]);
@@ -233,12 +220,12 @@ export function PresentationLayout({ children }: PresentationLayoutProps) {
     };
   }, [handleWheel, handleTouchStart, handleTouchEnd]);
 
-  // Limpiar URL al montar — siempre empezar en /
-  useEffect(() => {
-    if (window.location.href !== window.location.origin + '/') {
-      window.history.replaceState(null, '', '/');
-    }
-  }, []);
+  // Limpiar URL al montar — opcional, pero puede interferir con navegación legítima
+  // useEffect(() => {
+  //   if (window.location.href !== window.location.origin + '/') {
+  //     window.history.replaceState(null, '', '/');
+  //   }
+  // }, []);
 
   return (
     <div 
@@ -265,7 +252,7 @@ export function PresentationLayout({ children }: PresentationLayoutProps) {
       {/* Dots de navegación (Desktop) */}
       {!isMobile && (
         <SectionDots
-          total={sections.length}
+          total={childrenArray.length}
           current={currentIndex}
           onNavigate={navigate}
         />
@@ -357,7 +344,7 @@ export function PresentationLayout({ children }: PresentationLayoutProps) {
         >
           {/* Padding top para el navbar */}
           <div style={{ paddingTop: '64px', minHeight: '100%', position: 'relative' }}>
-            {children[currentIndex]}
+            {childrenArray[currentIndex]}
           </div>
         </motion.div>
       </AnimatePresence>

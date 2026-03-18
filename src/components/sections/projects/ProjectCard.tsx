@@ -20,19 +20,29 @@ const statusConfig = {
 function StatusBadge({ status }: { status: Project['status'] }) {
   const { label, color } = statusConfig[status];
   return (
-    <span style={{
-      fontFamily: 'var(--font-ui)',
-      fontSize: '10px',
-      fontWeight: 500,
-      color,
-      background: `${color}18`,
-      border: `1px solid ${color}40`,
-      borderRadius: '999px',
-      padding: '3px 10px',
-      whiteSpace: 'nowrap',
-    }}>
-      {label}
-    </span>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <motion.div
+        animate={{ opacity: [0.4, 1, 0.4] }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        style={{
+          width: '6px',
+          height: '6px',
+          borderRadius: '50%',
+          background: color,
+          boxShadow: `0 0 8px ${color}`,
+        }}
+      />
+      <span style={{
+        fontFamily: 'var(--font-ui)',
+        fontSize: '11px',
+        fontWeight: 600,
+        color,
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+      }}>
+        {label}
+      </span>
+    </div>
   );
 }
 
@@ -90,58 +100,89 @@ export function ProjectCard({ project, isActive }: ProjectCardProps) {
     <motion.div
       animate={isActive ? {
         boxShadow: [
-          '0 0 0px rgba(127,119,221,0)',
-          '0 0 30px rgba(127,119,221,0.12)',
-          '0 0 0px rgba(127,119,221,0)',
+          `0 0 0px ${statusColor}00`,
+          `0 0 40px ${statusColor}15`,
+          `0 0 0px ${statusColor}00`,
         ],
-      } : { boxShadow: 'none' }}
+        scale: 1,
+        opacity: 1,
+      } : { 
+        boxShadow: 'none',
+        scale: 0.98,
+        opacity: 0.6,
+      }}
       transition={{
-        duration: 3,
-        repeat: Infinity,
-        ease: 'easeInOut',
+        boxShadow: {
+          duration: 3,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        },
+        scale: { duration: 0.4 },
+        opacity: { duration: 0.4 },
       }}
       style={{
         background: 'var(--color-bg-surface)',
         border: '1px solid var(--color-border)',
-        borderTop: `2px solid ${statusColor}`,
-        borderRadius: '16px',
-        padding: isDesktop ? '36px' : '24px',
+        borderTop: `3px solid ${statusColor}`,
+        borderRadius: '20px',
+        padding: isDesktop ? '40px' : '20px',
         display: 'grid',
-        gridTemplateColumns: isDesktop ? '1fr 320px' : '1fr', // desktop vs mobile
-        gap: isDesktop ? '40px' : '24px',
-        alignItems: 'start',
+        gridTemplateColumns: isDesktop ? '1fr 340px' : '1fr',
+        gap: isDesktop ? '48px' : '24px',
+        alignItems: 'stretch',
         width: '100%',
         position: 'relative',
         overflow: 'hidden',
+        backdropFilter: 'blur(10px)',
       }}
     >
+      {/* Subtle background glow based on status */}
+      <div style={{
+        position: 'absolute',
+        top: '-10%',
+        right: '-10%',
+        width: '40%',
+        height: '40%',
+        background: `radial-gradient(circle, ${statusColor}08 0%, transparent 70%)`,
+        zIndex: 0,
+        pointerEvents: 'none',
+      }} />
+
       {/* Columna izquierda — contenido principal */}
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1 }}>
         {/* Header */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
           {/* Eyebrow: rol */}
-          <span style={{
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
             fontFamily: 'var(--font-mono)',
             fontSize: '11px',
-            color: 'var(--color-text-muted)',
-            display: 'flex', alignItems: 'center', gap: '6px',
+            color: statusColor,
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
           }}>
-            <svg width={11} height={11} viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.5"/>
-              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"
-                stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>
+            <span style={{
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
+              background: statusColor,
+              boxShadow: `0 0 8px ${statusColor}`,
+            }} />
             {project.role}
-          </span>
+          </div>
 
           {/* Nombre del proyecto */}
           <h3 style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(22px, 3vw, 30px)',
-            fontWeight: 700,
+            fontSize: 'clamp(26px, 4vw, 36px)',
+            fontWeight: 800,
             color: 'var(--color-text-primary)',
             margin: 0,
-            lineHeight: 1.2,
+            lineHeight: 1.1,
+            letterSpacing: '-0.02em',
           }}>
             {project.name}
           </h3>
@@ -150,13 +191,13 @@ export function ProjectCard({ project, isActive }: ProjectCardProps) {
         {/* Descripción */}
         <p style={{
           fontFamily: 'var(--font-mono)',
-          fontSize: '14px',
-          lineHeight: 1.8,
+          fontSize: isDesktop ? '15px' : '14px',
+          lineHeight: 1.7,
           color: 'var(--color-text-secondary)',
-          margin: '0 0 24px',
-          // Coming soon: italic + opacidad reducida
+          margin: '0 0 32px',
           fontStyle: project.status === 'coming-soon' ? 'italic' : 'normal',
-          opacity: project.status === 'coming-soon' ? 0.5 : 1,
+          opacity: project.status === 'coming-soon' ? 0.6 : 0.9,
+          maxWidth: '600px',
         }}>
           {project.status === 'coming-soon'
             ? 'Próximamente — los detalles se publicarán al completar el proyecto.'
@@ -164,70 +205,96 @@ export function ProjectCard({ project, isActive }: ProjectCardProps) {
         </p>
 
         {/* Stack pills */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '24px' }}>
+        <div style={{ 
+          display: 'flex', 
+          flexWrap: 'wrap', 
+          gap: '8px', 
+          marginBottom: '32px',
+          marginTop: 'auto' // Empuja esto al fondo si hay espacio
+        }}>
           {project.stack.map(tech => (
             <span key={tech} style={{
               fontFamily: 'var(--font-mono)',
               fontSize: '11px',
-              padding: '4px 10px',
-              borderRadius: '4px',
-              background: 'var(--color-bg-elevated)',
+              padding: '5px 12px',
+              borderRadius: '6px',
+              background: 'rgba(255,255,255,0.03)',
               border: '1px solid var(--color-border)',
               color: 'var(--color-text-secondary)',
+              fontWeight: 500,
             }}>
               {tech}
             </span>
           ))}
         </div>
 
-        {/* Botón "Ver proyecto" */}
-        {project.status !== 'coming-soon' && (
-          <ViewProjectButton slug={project.slug} />
-        )}
-
-        {/* Links secundarios */}
-        <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
-          {project.githubUrl && (
-            <a href={project.githubUrl} target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: '6px',
-                fontFamily: 'var(--font-mono)', fontSize: '12px',
-                color: 'var(--color-text-muted)', textDecoration: 'none',
-                transition: 'color 0.2s ease',
-              }}
-              onMouseEnter={e => e.currentTarget.style.color = 'var(--color-text-primary)'}
-              onMouseLeave={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
-            >
-              <svg width={14} height={14} viewBox="0 0 24 24" fill="none">
-                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
-                  stroke="currentColor" strokeWidth="1.5"
-                  strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              GitHub
-            </a>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: isDesktop ? 'row' : 'column',
+          alignItems: isDesktop ? 'center' : 'flex-start',
+          gap: '24px' 
+        }}>
+          {/* Botón "Ver proyecto" */}
+          {project.status !== 'coming-soon' && (
+            <ViewProjectButton slug={project.slug} />
           )}
 
-          {project.demoUrl && (
-            <a href={project.demoUrl} target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: '6px',
-                fontFamily: 'var(--font-mono)', fontSize: '12px',
-                color: 'var(--color-text-muted)', textDecoration: 'none',
-                transition: 'color 0.2s ease',
-              }}
-              onMouseEnter={e => e.currentTarget.style.color = 'var(--color-text-primary)'}
-              onMouseLeave={e => e.currentTarget.style.color = 'var(--color-text-muted)'}
-            >
-              <svg width={12} height={12} viewBox="0 0 24 24" fill="none">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
-                  stroke="currentColor" strokeWidth="1.5"
-                  strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              Demo
-            </a>
-          )}
+          {/* Links secundarios */}
+          <div style={{ display: 'flex', gap: '20px' }}>
+            {project.githubUrl && (
+              <a href={project.githubUrl} target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '8px',
+                  fontFamily: 'var(--font-mono)', fontSize: '13px',
+                  color: 'var(--color-text-muted)', textDecoration: 'none',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.color = 'var(--color-text-primary)';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.color = 'var(--color-text-muted)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <svg width={16} height={16} viewBox="0 0 24 24" fill="none">
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+                    stroke="currentColor" strokeWidth="1.5"
+                    strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                GitHub
+              </a>
+            )}
+
+            {project.demoUrl && (
+              <a href={project.demoUrl} target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '8px',
+                  fontFamily: 'var(--font-mono)', fontSize: '13px',
+                  color: 'var(--color-text-muted)', textDecoration: 'none',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.color = 'var(--color-text-primary)';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.color = 'var(--color-text-muted)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <svg width={14} height={14} viewBox="0 0 24 24" fill="none">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"
+                    stroke="currentColor" strokeWidth="1.5"
+                    strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Demo
+              </a>
+            )}
+          </div>
         </div>
       </div>
 
@@ -235,18 +302,21 @@ export function ProjectCard({ project, isActive }: ProjectCardProps) {
       <div style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '16px',
+        gap: '20px',
         borderLeft: isDesktop ? '1px solid var(--color-border)' : 'none',
         borderTop: isDesktop ? 'none' : '1px solid var(--color-border)',
-        paddingLeft: isDesktop ? '40px' : '0',
-        paddingTop: isDesktop ? '0' : '24px',
+        paddingLeft: isDesktop ? '48px' : '0',
+        paddingTop: isDesktop ? '0' : '32px',
+        position: 'relative',
+        zIndex: 1,
       }}>
         {/* Status + año */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <StatusBadge status={project.status} />
           <span style={{
-            fontFamily: 'var(--font-mono)', fontSize: '12px',
+            fontFamily: 'var(--font-mono)', fontSize: '13px',
             color: 'var(--color-text-muted)',
+            fontWeight: 500,
           }}>
             {project.year}
           </span>
@@ -255,32 +325,45 @@ export function ProjectCard({ project, isActive }: ProjectCardProps) {
         {/* Architecture Decision */}
         {project.status !== 'coming-soon' && (
           <div style={{
-            background: 'color-mix(in srgb, var(--color-accent-primary), transparent 92%)',
-            border: '1px solid color-mix(in srgb, var(--color-accent-primary), transparent 80%)',
-            borderLeft: '2px solid var(--color-accent-primary)',
-            borderRadius: '8px',
-            padding: '14px 16px',
+            background: 'rgba(255,255,255,0.02)',
+            border: '1px solid var(--color-border)',
+            borderLeft: `3px solid ${statusColor}`,
+            borderRadius: '12px',
+            padding: '20px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '6px',
+            gap: '8px',
+            transition: 'transform 0.3s ease',
           }}>
-            <span style={{
-              fontFamily: 'var(--font-ui)', fontSize: '10px',
-              fontWeight: 500, color: 'var(--color-accent-primary)',
-              textTransform: 'uppercase', letterSpacing: '0.08em',
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              marginBottom: '4px',
             }}>
-              Decisión de arquitectura
-            </span>
+              <svg width={12} height={12} viewBox="0 0 24 24" fill="none" style={{ color: statusColor }}>
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" 
+                  stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span style={{
+                fontFamily: 'var(--font-ui)', fontSize: '10px',
+                fontWeight: 600, color: statusColor,
+                textTransform: 'uppercase', letterSpacing: '0.1em',
+              }}>
+                Technical Insight
+              </span>
+            </div>
             <span style={{
-              fontFamily: 'var(--font-mono)', fontSize: '12px',
-              fontWeight: 500, color: 'var(--color-text-primary)',
-              lineHeight: 1.4,
+              fontFamily: 'var(--font-display)', fontSize: '14px',
+              fontWeight: 600, color: 'var(--color-text-primary)',
+              lineHeight: 1.3,
             }}>
               {project.architectureDecision.title}
             </span>
             <span style={{
-              fontFamily: 'var(--font-mono)', fontSize: '11px',
+              fontFamily: 'var(--font-mono)', fontSize: '12px',
               color: 'var(--color-text-secondary)', lineHeight: 1.6,
+              opacity: 0.8,
             }}>
               {project.architectureDecision.description}
             </span>
@@ -290,22 +373,26 @@ export function ProjectCard({ project, isActive }: ProjectCardProps) {
         {/* Impact metric */}
         {project.impact && (
           <div style={{
-            display: 'flex', alignItems: 'center', gap: '12px',
-            padding: '12px 16px',
-            background: 'color-mix(in srgb, var(--color-accent-secondary), transparent 92%)',
-            border: '1px solid color-mix(in srgb, var(--color-accent-secondary), transparent 80%)',
-            borderRadius: '8px',
+            display: 'flex', 
+            flexDirection: 'column',
+            gap: '4px',
+            padding: '16px 20px',
+            background: `linear-gradient(135deg, ${statusColor}10 0%, transparent 100%)`,
+            border: '1px solid var(--color-border)',
+            borderRadius: '12px',
           }}>
             <span style={{
-              fontFamily: 'var(--font-display)', fontSize: '32px',
-              fontWeight: 700, color: 'var(--color-accent-secondary)',
+              fontFamily: 'var(--font-display)', fontSize: '36px',
+              fontWeight: 800, color: statusColor,
               lineHeight: 1,
+              letterSpacing: '-0.02em',
             }}>
               {project.impact.value}
             </span>
             <span style={{
               fontFamily: 'var(--font-mono)', fontSize: '12px',
               color: 'var(--color-text-secondary)', lineHeight: 1.4,
+              fontWeight: 500,
             }}>
               {project.impact.metric}
             </span>
@@ -313,15 +400,16 @@ export function ProjectCard({ project, isActive }: ProjectCardProps) {
         )}
 
         {/* Tags */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: 'auto' }}>
           {project.tags.map(tag => (
             <span key={tag} style={{
               fontFamily: 'var(--font-ui)', fontSize: '10px',
-              padding: '2px 8px', borderRadius: '999px',
+              padding: '3px 10px', borderRadius: '999px',
               background: 'var(--color-bg-elevated)',
               border: '1px solid var(--color-border)',
               color: 'var(--color-text-muted)',
               textTransform: 'capitalize',
+              fontWeight: 500,
             }}>
               #{tag}
             </span>
