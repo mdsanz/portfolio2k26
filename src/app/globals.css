@@ -1,0 +1,194 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@layer base {
+  /* Modo oscuro — default */
+  :root,
+  [data-theme="dark"] {
+    --color-bg-base:       #0D0D0F;
+    --color-bg-surface:    #1A1A1E;
+    --color-bg-elevated:   #222228;
+    --color-border:        #2E2E36;
+    --color-accent-primary:   #7F77DD;
+    --color-accent-secondary: #1D9E75;
+    --color-text-primary:  #E8E6FF;
+    --color-text-secondary: #A0A0A8;
+    --color-text-muted:    #5A5A62;
+
+    --font-display: 'Syne', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --font-ui: 'DM Sans', sans-serif;
+  }
+
+  /* Modo claro */
+  [data-theme="light"] {
+    --color-bg-base:       #F5F5F7;
+    --color-bg-surface:    #FFFFFF;
+    --color-bg-elevated:   #EEEEF2;
+    --color-border:        #D8D8E0;
+    --color-accent-primary:   #534AB7;
+    --color-accent-secondary: #0F6E56;
+    --color-text-primary:  #1A1A2E;
+    --color-text-secondary: #5F5E5A;
+    --color-text-muted:    #909098;
+  }
+
+  /* Transición suave al cambiar tema */
+  *, *::before, *::after {
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      color 0.2s ease;
+  }
+
+  /* Excluir elementos que no deben transicionar */
+  .no-theme-transition,
+  .no-theme-transition * {
+    transition: none !important;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: var(--color-bg-base);
+    color: var(--color-text-primary);
+    font-family: var(--font-mono);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply py-20 px-6 md:px-12 lg:px-24;
+  }
+
+  .font-display { font-family: var(--font-display); }
+  .font-mono { font-family: var(--font-mono); }
+  .font-ui { font-family: var(--font-ui); }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-primary);
+}
+
+/* Lenis Smooth Scroll */
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+@keyframes cursor-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.animate-cursor-blink {
+  animation: cursor-blink 530ms infinite;
+}
+
+/* React Flow Overrides */
+.react-flow__node {
+  border: none !important;
+  background: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  font-size: unset !important;
+}
+
+.react-flow__node.selected,
+.react-flow__node:focus,
+.react-flow__node:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.react-flow__controls { display: none !important; }
+.react-flow__attribution { display: none !important; }
+.react-flow__minimap { display: none !important; }
+
+.react-flow__pane { cursor: default !important; }
+
+.react-flow__renderer { background: transparent; }
+
+.react-flow__handle {
+  opacity: 0;
+  pointer-events: none;
+  width: 6px;
+  height: 6px;
+}
+
+.react-flow__edge-path {
+  stroke-width: 1;
+}
+
+.react-flow__background pattern circle {
+  fill: var(--color-border);
+}
+
+@keyframes node-pulse {
+  0%, 100% { box-shadow: 0 0 0px transparent; }
+  50%       { box-shadow: 0 0 16px var(--node-glow, transparent); }
+}
+
+.tech-node-card {
+  animation: node-pulse 3s ease-in-out infinite;
+}
+
+/* Forzar transparencia en todos los elementos internos de ReactFlow */
+.react-flow__renderer,
+.react-flow__container,
+.react-flow__pane,
+.react-flow__viewport,
+.react-flow {
+  background: transparent !important;
+}
+
+.react-flow__background {
+  background: transparent !important;
+}
+
+/* Optimización de transiciones: pausa animaciones CSS durante el slide */
+.is-transitioning * {
+  animation-play-state: paused !important;
+}
