@@ -78,22 +78,66 @@
   .font-ui { font-family: var(--font-ui); }
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar - Creative, Tech Theme & Auto-hide effect */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 12px;
 }
 
+/* Track: invisible por defecto, se revela sutilmente al hacer hover en la página */
 ::-webkit-scrollbar-track {
+  background: transparent;
+  border-left: 1px dashed transparent;
+}
+
+body:hover ::-webkit-scrollbar-track {
   background: var(--color-bg-base);
+  border-left: 1px dashed color-mix(in srgb, var(--color-border), transparent 80%);
 }
 
+/* Thumb (Scroll): casi invisible cuando no hay interacción */
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 4px;
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-accent-secondary), transparent 85%) 0%,
+    color-mix(in srgb, var(--color-accent-primary), transparent 85%) 50%,
+    color-mix(in srgb, var(--color-accent-secondary), transparent 85%) 100%
+  );
+  background-size: 100% 200%;
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
 }
 
+/* Interacción media: body hover o scroll activo (gracias a lenis-scrolling) */
+html.lenis-scrolling ::-webkit-scrollbar-thumb,
+body:hover ::-webkit-scrollbar-thumb {
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-accent-secondary), transparent 30%) 0%,
+    color-mix(in srgb, var(--color-accent-primary), transparent 30%) 50%,
+    color-mix(in srgb, var(--color-accent-secondary), transparent 30%) 100%
+  );
+  border: 3px solid var(--color-bg-base);
+}
+
+/* Hover directo en el scrollbar: 100% opaco e invierte colores para la animación visual */
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-accent-primary);
+  background-image: linear-gradient(
+    180deg,
+    var(--color-accent-primary) 0%,
+    var(--color-accent-secondary) 50%,
+    var(--color-accent-primary) 100%
+  );
+  border: 3px solid var(--color-bg-base);
+}
+
+/* Firefox compatibility con soporte nativo de opacity fading (en algunas versiones) */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-accent-primary), transparent 60%) transparent;
+}
+html:hover {
+  scrollbar-color: var(--color-accent-primary) transparent;
 }
 
 /* Lenis Smooth Scroll */

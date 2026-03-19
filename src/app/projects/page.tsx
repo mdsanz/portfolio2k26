@@ -136,9 +136,7 @@ export default function ProjectsPage() {
   // Grid columns logic
   const gridColumns = isMobile 
     ? '1fr' 
-    : isTablet 
-      ? 'repeat(2, 1fr)' 
-      : 'repeat(auto-fill, minmax(340px, 1fr))'
+    : 'repeat(2, 1fr)'
 
   return (
     <div style={{
@@ -324,8 +322,9 @@ export default function ProjectsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08, duration: 0.4 }}
+                style={{ display: 'flex', height: '100%' }}
               >
-                <ProjectCard project={project} isActive={false} />
+                <ProjectCard project={project} isActive={false} layout="grid" />
               </motion.div>
             ))}
           </motion.div>

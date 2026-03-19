@@ -8,6 +8,10 @@ import { ProjectCard } from './ProjectCard';
 import { useMediaQuery } from '@/src/hooks/useMediaQuery';
 
 const CAROUSEL_LIMIT = 3; // máximo de proyectos en el carrusel
+const swipeConfidenceThreshold = 10000;
+const swipePower = (offset: number, velocity: number) => {
+  return Math.abs(offset) * velocity;
+};
 
 interface ProjectCarouselProps {
   projects: Project[];
@@ -122,9 +126,9 @@ export function ProjectCarousel({ projects }: ProjectCarouselProps) {
 
   const transition = {
     x: {
-      type: 'tween',
+      type: 'tween' as const,
       duration: 0.45,
-      ease: [0.25, 0.46, 0.45, 0.94],
+      ease: [0.25, 0.46, 0.45, 0.94] as const,
     },
     opacity: { duration: 0.3 },
   };
@@ -165,6 +169,17 @@ export function ProjectCarousel({ projects }: ProjectCarouselProps) {
                 animate="center"
                 exit="exit"
                 transition={transition}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={1}
+                onDragEnd={(e, { offset, velocity }) => {
+                  const swipe = swipePower(offset.x, velocity.x);
+                  if (swipe < -swipeConfidenceThreshold) {
+                    goNext();
+                  } else if (swipe > swipeConfidenceThreshold) {
+                    goPrev();
+                  }
+                }}
               >
                 <ProjectCard
                   project={carouselProjects[currentIndex]}
@@ -183,6 +198,7 @@ export function ProjectCarousel({ projects }: ProjectCarouselProps) {
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: '16px',
+        order: isMobile ? -1 : 1,
       }}>
 
         {/* Botón anterior */}

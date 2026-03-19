@@ -81,7 +81,10 @@ export function PresentationLayout({ children }: PresentationLayoutProps) {
   const touchStartY = useRef<number | null>(null);
   const touchStartX = useRef<number | null>(null);
 
+  const isFirstMount = useRef(true);
+
   useEffect(() => {
+    isFirstMount.current = false;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
@@ -321,12 +324,12 @@ export function PresentationLayout({ children }: PresentationLayoutProps) {
       </AnimatePresence>
 
       {/* Contenido de la sección activa */}
-      <AnimatePresence initial={false} custom={direction} mode="popLayout">
+      <AnimatePresence initial={true} custom={direction} mode="popLayout">
         <motion.div
           key={currentIndex}
           custom={direction}
           variants={prefersReducedMotion ? reducedVariants : variants}
-          initial="enter"
+          initial={isFirstMount.current ? "center" : "enter"}
           animate="center"
           exit="exit"
           transition={transition}

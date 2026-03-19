@@ -9,6 +9,7 @@ import { useMediaQuery } from '@/src/hooks/useMediaQuery';
 interface ProjectCardProps {
   project: Project;
   isActive: boolean; // controla la animación
+  layout?: 'carousel' | 'grid';
 }
 
 const statusConfig = {
@@ -92,7 +93,7 @@ function ViewProjectButton({ slug }: { slug: string }) {
   );
 }
 
-export function ProjectCard({ project, isActive }: ProjectCardProps) {
+export function ProjectCard({ project, isActive, layout = 'carousel' }: ProjectCardProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const statusColor = statusConfig[project.status].color;
 
@@ -125,12 +126,14 @@ export function ProjectCard({ project, isActive }: ProjectCardProps) {
         border: '1px solid var(--color-border)',
         borderTop: `3px solid ${statusColor}`,
         borderRadius: '20px',
-        padding: isDesktop ? '40px' : '20px',
+        padding: isDesktop ? (layout === 'carousel' ? '40px' : '32px') : '20px',
         display: 'grid',
-        gridTemplateColumns: isDesktop ? '1fr 340px' : '1fr',
-        gap: isDesktop ? '48px' : '24px',
+        gridTemplateColumns: (isDesktop && layout === 'carousel') ? '1fr 340px' : '1fr',
+        gap: (isDesktop && layout === 'carousel') ? '48px' : '24px',
         alignItems: 'stretch',
         width: '100%',
+        height: '100%',
+        minHeight: isDesktop ? '420px' : 'auto',
         position: 'relative',
         overflow: 'hidden',
         backdropFilter: 'blur(10px)',
@@ -303,10 +306,10 @@ export function ProjectCard({ project, isActive }: ProjectCardProps) {
         display: 'flex',
         flexDirection: 'column',
         gap: '20px',
-        borderLeft: isDesktop ? '1px solid var(--color-border)' : 'none',
-        borderTop: isDesktop ? 'none' : '1px solid var(--color-border)',
-        paddingLeft: isDesktop ? '48px' : '0',
-        paddingTop: isDesktop ? '0' : '32px',
+        borderLeft: (isDesktop && layout === 'carousel') ? '1px solid var(--color-border)' : 'none',
+        borderTop: (isDesktop && layout === 'carousel') ? 'none' : '1px solid var(--color-border)',
+        paddingLeft: (isDesktop && layout === 'carousel') ? '48px' : '0',
+        paddingTop: (isDesktop && layout === 'carousel') ? '0' : '32px',
         position: 'relative',
         zIndex: 1,
       }}>
