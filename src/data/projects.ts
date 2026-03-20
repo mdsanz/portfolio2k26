@@ -15,6 +15,13 @@ export interface Project {
     metric: string            // ej. "Reducción de latencia"
     value: string             // ej. "40%"
   }
+  images?: {
+    src: string
+    alt: string
+    caption?: string
+  }[]
+  highlights?: string[]       // Key features / bullet points
+  architectureDiagram?: string // Mermaid diagram definition
   githubUrl?: string
   demoUrl?: string
   status: ProjectStatus
@@ -49,6 +56,25 @@ export const projects: Project[] = [
       metric: 'Métrica de impacto',          // TODO: reemplazar
       value: '0%',                           // TODO: reemplazar
     },
+    highlights: [
+      'Implementación de API RESTful con autenticación JWT',
+      'Pipeline de CI/CD con GitHub Actions',
+      'Base de datos PostgreSQL con migraciones automatizadas',
+      'Containerización con Docker y docker-compose',
+    ],
+    images: [
+      { src: 'https://picsum.photos/seed/p1-1/800/450', alt: 'Dashboard principal', caption: 'Vista del dashboard principal del proyecto' },
+      { src: 'https://picsum.photos/seed/p1-2/800/450', alt: 'Arquitectura del sistema', caption: 'Diagrama de la arquitectura del sistema' },
+    ],
+    architectureDiagram: `
+graph TD
+  Client[Web Client] -->|HTTPS| ALB[Load Balancer]
+  ALB --> API[Node.js API]
+  API --> DB[(PostgreSQL)]
+  API --> Cache[(Redis)]
+  API --> Worker[Background Worker]
+  Worker --> Q[Job Queue]
+    `,
     githubUrl: 'https://github.com/username/project-one', // TODO: reemplazar
     demoUrl: undefined,
     status: 'completed',
@@ -73,6 +99,14 @@ export const projects: Project[] = [
       title: 'Decisión técnica clave',       // TODO: reemplazar
       description: 'Explicación de por qué tomaste esa decisión.',
     },
+    highlights: [
+      'Microservicios con Spring Boot y comunicación asíncrona',
+      'Event-driven architecture con Apache Kafka',
+      'Monitoreo con Prometheus y Grafana',
+    ],
+    images: [
+      { src: 'https://picsum.photos/seed/p2-1/800/450', alt: 'API Gateway', caption: 'Diseño del API Gateway' },
+    ],
     githubUrl: 'https://github.com/username/project-two', // TODO: reemplazar
     demoUrl: undefined,
     status: 'in-progress',
@@ -153,6 +187,32 @@ export const projects: Project[] = [
       metric: 'Secciones con animación 3D',
       value: '3',
     },
+    highlights: [
+      'Navegación tipo presentación con Framer Motion',
+      'Backgrounds 3D interactivos con Three.js',
+      'Tema claro/oscuro con transiciones suaves',
+      'Diseño completamente responsive',
+      'Carrusel de proyectos con soporte para swipe',
+    ],
+    images: [
+      { src: 'https://picsum.photos/seed/port-1/800/450', alt: 'Hero section', caption: 'Sección principal con fondo de grafos animado' },
+      { src: 'https://picsum.photos/seed/port-2/800/450', alt: 'Proyectos', caption: 'Vista del carrusel de proyectos' },
+      { src: 'https://picsum.photos/seed/port-3/800/450', alt: 'Tech Stack', caption: 'Visualización interactiva del stack tecnológico' },
+    ],
+    architectureDiagram: `
+graph LR
+  User((User)) --> NextApp[Next.js App Server]
+  NextApp --> VercelCDN[Vercel Edge CDN]
+  NextApp -.->|API Calls| Gemini[Gemini AI Model]
+  
+  subgraph Client [Browser]
+    React[React 18]
+    ThreeJS[Three.js / Canvas]
+    Motion[Framer Motion]
+  end
+
+  VercelCDN --> Client
+    `,
     githubUrl: 'https://github.com/username/portfolio', // TODO: reemplazar
     demoUrl: 'https://tudominio.dev',                   // TODO: reemplazar
     status: 'in-progress',
