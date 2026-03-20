@@ -120,7 +120,7 @@ const MatrixRain = ({ color }: { color: string }) => {
   }), [texture])
 
   return (
-    <instancedMesh ref={meshRef} args={[null, null, count]}>
+    <instancedMesh ref={meshRef} args={[null as any, null as any, count]}>
       <planeGeometry args={[0.45, 0.55]}>
         <instancedBufferAttribute 
           attach="attributes-aCharIndex" 

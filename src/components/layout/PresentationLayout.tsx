@@ -47,13 +47,13 @@ const reducedVariants = {
 
 const transition = {
   transform: {
-    type: 'tween',
+    type: 'tween' as const,
     duration: 0.7,
-    ease: [0.16, 1, 0.3, 1], // ease-out-expo — arranca rápido, termina muy suave
+    ease: [0.16, 1, 0.3, 1] as const, // ease-out-expo
   },
   opacity: {
     duration: 0.5,
-    ease: 'easeOut',
+    ease: 'easeOut' as const,
   },
 };
 
